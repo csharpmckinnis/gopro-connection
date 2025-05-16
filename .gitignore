@@ -1,0 +1,40 @@
+# Ignore MP4 files
+*.MP4
+*.mp4
+
+# Ignore log files
+*.log
+
+# Ignore environment files
+.env
+
+# Ignore the 'to_upload' folder
+to_upload/
+
+# Python-specific ignores
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.manifest
+*.spec
+*.db
+*.sqlite3
+
+# Virtual environment
+venv/
+.env/
+env/
+ENV/
+.virtualenv/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# macOS-specific ignores
+.DS_Store
