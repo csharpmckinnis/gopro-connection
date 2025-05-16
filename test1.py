@@ -148,11 +148,9 @@ class Box():
                 except Exception as e:
                     print(f"Error uploading file '{file_name}': {e}")
 
-
-async def main():
-    async with WirelessGoPro() as gopro:
-        print("Connected to GoPro")
-
+async def get_all_files(gopro_number=None):
+    async with WirelessGoPro(target=gopro_number) as gopro:
+        print('Connected')
         # Get media list
         resp = await gopro.http_command.get_media_list()
         media_list = resp.data.media
@@ -166,12 +164,21 @@ async def main():
                 await gopro.http_command.download_file(camera_file=path, local_file=local_name)
                 print(f"Downloaded {local_name}")
 
+async def delete_all_files(gopro_number=None):
+    async with WirelessGoPro(target=gopro_number) as gopro:
+        print('Connected')
         # Delete all media on camera
         print("Deleting all media on camera...")
         await gopro.http_command.delete_all()
         print("All media deleted from camera.")
 
+
+async def download_and_delete():
+    await get_all_files()
+    await delete_all_files()
+
 if __name__ == "__main__":
     #asyncio.run(main())
     box = Box()
-    box.upload_all_files_to_box("to_upload", box.videos_folder_box_id)
+    box.upload_file_to_box("to_upload/GX010129.MP4", "GX010129.MP4", box.videos_folder_box_id)
+    #asyncio.run(get_all_files())
