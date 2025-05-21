@@ -177,16 +177,25 @@ async def get_all_files(gopro_number=None):
         return f"Fail"
 
 async def delete_all_files(gopro_number=None):
-    try:
-        async with WirelessGoPro(target=gopro_number) as gopro:
-            media_list = await gopro.http_command.get_media_list()
+    async with WirelessGoPro(target=gopro_number) as gopro:
+        try:
+            # Get the media list
+            resp = await gopro.http_command.get_media_list()
+            media_list = resp.data.media
             print(f"Media list: {media_list}")
-            delete_results = await gopro.http_command.delete_all()
-            print(f"Delete results: {delete_results}")
+
+            # Iterate through the media list and delete each file individually
+            for group in media_list:
+                for fs in group.file_system:
+                    filename = fs.filename
+                    print(f"Deleting file: {filename}")
+                    delete_results = await gopro.http_command.delete_file(path=filename)
+                    print(f"Delete results for {filename}: {delete_results}")
+
             return "Success"
-    except Exception as e:
-        print(f"Error during file deletion: {e}")
-        return f"Fail"
+        except Exception as e:
+            print(f"Error during file deletion: {e}")
+            return "Fail"
 
 async def get_camera_info(gopro_number=None):
     async with WirelessGoPro(target=gopro_number) as gopro:
@@ -214,6 +223,6 @@ if __name__ == "__main__":
     #box.upload_file_to_box("to_upload/GX010129.MP4", "GX010129.MP4", box.videos_folder_box_id)
     #asyncio.run(get_all_files())
 
-    asyncio.run(delete_all_files('9799'))
+    asyncio.run(delete_all_files())
 
     #info, state = asyncio.run(get_camera_info('9799'))
